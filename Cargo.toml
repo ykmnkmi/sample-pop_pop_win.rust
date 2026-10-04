@@ -18,10 +18,25 @@ bevy = { version = "0.15", default-features = false, features = [
     "png",
     "jpeg",
     "vorbis",
-    "x11",
 ] }
+bevy_embedded_assets = "0.12"
 rand = "0.8"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+bevy = { version = "0.15", default-features = false, features = ["x11"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+bevy = { version = "0.15", default-features = false, features = ["webgl2"] }
+getrandom = { version = "0.2", features = ["js"] }
+getrandom_0_3 = { package = "getrandom", version = "0.3", features = ["wasm_js"] }
+uuid = { version = "1", features = ["js"] }
+web-sys = { version = "0.3", features = ["Window", "Storage"] }
+
 [dev-dependencies]
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+strip = "debuginfo"

@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+#[cfg(not(target_arch = "wasm32"))]
 use std::fs::{self, File};
+#[cfg(not(target_arch = "wasm32"))]
 use std::io::BufReader;
 
 const STORAGE_PATH: &str = "highscores.json";
@@ -12,6 +15,7 @@ pub struct HighScores {
 }
 
 impl HighScores {
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn load() -> Self {
         if let Ok(file) = File::open(STORAGE_PATH) {
             if let Ok(records) = serde_json::from_reader(BufReader::new(file)) {
@@ -21,9 +25,35 @@ impl HighScores {
         Self::default()
     }
 
+    #[cfg(target_arch = "wasm32")]
+    pub fn load() -> Self {
+        if let Some(window) = web_sys::window() {
+            if let Ok(Some(storage)) = window.local_storage() {
+                if let Ok(Some(data)) = storage.get_item(STORAGE_PATH) {
+                    if let Ok(records) = serde_json::from_str(&data) {
+                        return Self { records };
+                    }
+                }
+            }
+        }
+        Self::default()
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn save(&self) {
         if let Ok(json) = serde_json::to_string_pretty(&self.records) {
             let _ = fs::write(STORAGE_PATH, json);
+        }
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    pub fn save(&self) {
+        if let Ok(json) = serde_json::to_string(&self.records) {
+            if let Some(window) = web_sys::window() {
+                if let Ok(Some(storage)) = window.local_storage() {
+                    let _ = storage.set_item(STORAGE_PATH, &json);
+                }
+            }
         }
     }
 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Pop, Pop, Win! - Bevy Edition</title>
+    <!-- Trunk configuration: embed Rust WASM with size optimization -->
+    <link data-trunk rel="rust" data-wasm-opt="s"/>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #b4ad7f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        #loading {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3b3528;
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(59, 53, 40, 0.2);
+            border-top-color: #3b3528;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <div>POP, POP, WIN!</div>
+        <div style="font-size: 0.9rem; font-weight: normal; margin-top: 6px; opacity: 0.8;">Loading game engine...</div>
+    </div>
+    <script>
+        // Hide loading screen once Bevy canvas gains focus or receives events
+        const observer = new MutationObserver(() => {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                const loading = document.getElementById('loading');
+                if (loading) loading.style.display = 'none';
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.body, { childList: true });
+    </script>
+</body>
+</html>

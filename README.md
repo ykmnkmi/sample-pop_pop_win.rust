@@ -27,17 +27,30 @@ An implementation of Minesweeper in **Rust** using the **[Bevy Engine](https://b
 
 ## Running and Building
 
-* Run locally in development mode:
+* **Run locally in development mode (Desktop)**:
   ```powershell
   cargo run
   ```
 
-* Run with release optimizations:
+* **Build standalone portable executable (Assets Embedded)**:
   ```powershell
-  cargo run --release
+  cargo build --release
+  ```
+  *Produces a single standalone `target/release/pop_pop_win.exe` with all ~4.6 MB of assets embedded directly in the binary—no external `assets/` folder required!*
+
+* **Build & Run for Web (WebAssembly / WebGL2)**:
+  ```powershell
+  # 1. Install Trunk (first time only)
+  cargo install trunk
+
+  # 2. Run local web server with hot-reload
+  trunk serve
+
+  # 3. Build optimized static bundle in dist/
+  trunk build --release
   ```
 
-* Run test suite:
+* **Run test suite**:
   ```powershell
   cargo test
   ```
