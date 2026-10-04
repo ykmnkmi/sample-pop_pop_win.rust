@@ -1,47 +1,51 @@
-An implementation of
-<a href="http://en.wikipedia.org/wiki/Minesweeper_(video_game)">Minesweeper</a>
-in [Dart](https://dart.dev/).
+# Pop, Pop, Win! (Bevy Engine Edition)
 
-<a href="https://studio.firebase.google.com/import?url=https%3A%2F%2Fgithub.com%2Fdart-lang%2Fsample-pop_pop_win%2F">
-  <picture>
-    <source
-      media="(prefers-color-scheme: dark)"
-      srcset="https://cdn.firebasestudio.dev/btn/open_dark_32.svg">
-    <source
-      media="(prefers-color-scheme: light)"
-      srcset="https://cdn.firebasestudio.dev/btn/open_light_32.svg">
-    <img
-      height="32"
-      alt="Open in Firebase Studio"
-      src="https://cdn.firebasestudio.dev/btn/open_blue_32.svg">
-  </picture>
-</a>
+An implementation of Minesweeper in **Rust** using the **[Bevy Engine](https://bevyengine.org/)** (v0.15).
 
-## Interaction
+> **Origin & Attribution**: This project is a port of the classic **[Pop, Pop, Win!](https://github.com/dart-lang/sample-pop_pop_win)** game, originally created in [Dart](https://dart.dev/) by Google's Dart team and contributors as a 2D web showcase. The original carnival balloon-popping idea, gameplay mechanics, and retro aesthetic have been preserved and reimagined using Rust's Bevy ECS architecture.
 
- * Click on hidden squares to reveal them.
- * Shift-click on squares to flag them.
- * Shift-click on revealed numbers to go fast--but be careful. If you've flagged
-   incorrectly, you'll hit a bomb.
+## How to Play
 
-## Assets
- * Art - Pete Parisi, [fuzzycube software](http://fuzzycubesoftware.com/)
- * Sound Effects - Alistair Hirst,
-   [OMNI Audio](https://www.linkedin.com/in/alistairhirst/)
- * Winning Sax Riff - Brian Moore
+* **Left-click** on balloons to pop them and clear the field.
+* Numbers tell how many bombs are adjacent (including diagonals).
+* **Right-click** or **Shift + Left-click** to flag/freeze suspected bombs.
+* **Chord Reveal**: Right-click or Shift-click an already opened number when all its neighbor bombs are flagged to quickly clear surrounding safe tiles.
+* **Warning**: Chord-popping with incorrect flags will trigger a bomb!
+* **First click is always 100% safe**.
 
-## Running and building
+## Controls & Options
 
- * Clone the repository.
- * Run `pub get`.
- * To run locally with [dartdevc](https://dart.dev/tools/dartdevc):
- 
-   ```console
-   dart run build_runner serve
-   ```
+* **[H]** or **Click Logo**: Open/close the Help & Difficulty modal.
+* **[Esc]**: Close modal.
+* **[New Game]**: Restart the game at any time.
+* **Engine Settings Panel**:
+  * **VSync Mode**: Toggle between VSync ON and VSync OFF (`AutoNoVsync`) for smooth window movement.
+  * **Window Mode**: Toggle between Windowed and Borderless Fullscreen.
+  * **Sound FX**: Toggle game sounds between ON and MUTED.
+  * **FPS Counter**: Display real-time frames per second in the HUD.
+  * **Engine Mode**: Toggle between Continuous rendering and Reactive (low-power) desktop mode.
 
- * To build with [dart2js](https://dart.dev/tools/dart2js) and minified output:
- 
-   ```console
-   dart run build_runner build --release --output web:build
-   ```
+## Running and Building
+
+* Run locally in development mode:
+  ```powershell
+  cargo run
+  ```
+
+* Run with release optimizations:
+  ```powershell
+  cargo run --release
+  ```
+
+* Run test suite:
+  ```powershell
+  cargo test
+  ```
+
+## Original Project & Credits
+
+* **Original Repository**: [dart-lang/sample-pop_pop_win](https://github.com/dart-lang/sample-pop_pop_win)
+* **Original Idea & Game**: Google Dart Team & Open Source Contributors
+* **Art**: Pete Parisi, [fuzzycube software](http://fuzzycubesoftware.com/)
+* **Sound Effects**: Alistair Hirst, [OMNI Audio](https://www.linkedin.com/in/alistairhirst/)
+* **Winning Sax Riff**: Brian Moore
