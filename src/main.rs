@@ -72,9 +72,35 @@ fn main() {
                 update_hud_text,
                 manage_about_modal_system,
                 apply_bevy_settings_system,
+                #[cfg(not(target_arch = "wasm32"))]
+                set_window_icon,
             ),
         )
         .run();
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn set_window_icon(
+    windows: NonSend<bevy::winit::WinitWindows>,
+    primary_window: Query<Entity, With<bevy::window::PrimaryWindow>>,
+    mut done: Local<bool>,
+) {
+    if *done {
+        return;
+    }
+    let Ok(primary_entity) = primary_window.get_single() else { return };
+    let Some(primary) = windows.get_window(primary_entity) else { return };
+
+    let image = image::load_from_memory(include_bytes!("../assets/images/sprites/balloon.png"))
+        .expect("Failed to decode balloon icon")
+        .into_rgba8();
+    let (width, height) = image.dimensions();
+    let rgba = image.into_raw();
+
+    if let Ok(icon) = winit::window::Icon::from_rgba(rgba, width, height) {
+        primary.set_window_icon(Some(icon));
+        *done = true;
+    }
 }
 
 fn setup_camera(mut commands: Commands) {
