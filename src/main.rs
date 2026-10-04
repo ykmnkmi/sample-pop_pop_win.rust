@@ -91,7 +91,7 @@ fn set_window_icon(
     let Ok(primary_entity) = primary_window.get_single() else { return };
     let Some(primary) = windows.get_window(primary_entity) else { return };
 
-    let image = image::load_from_memory(include_bytes!("../assets/images/sprites/balloon.png"))
+    let image = image::load_from_memory(include_bytes!("../assets/icon.png"))
         .expect("Failed to decode balloon icon")
         .into_rgba8();
     let (width, height) = image.dimensions();
