@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::render::camera::ScalingMode;
 use bevy::window::PresentMode;
 
-use bevy_embedded_assets::EmbeddedAssetPlugin;
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 use pop_pop_win::animation::{tick_pending_pops, update_flipbooks};
 use pop_pop_win::assets::load_game_assets;
 use pop_pop_win::audio::{audio_event_system, PlaySoundEvent};
@@ -24,7 +24,9 @@ fn main() {
     let (cols, rows, bombs) = initial_diff.dimensions();
 
     App::new()
-        .add_plugins(EmbeddedAssetPlugin::default())
+        .add_plugins(EmbeddedAssetPlugin {
+            mode: PluginMode::ReplaceDefault,
+        })
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {

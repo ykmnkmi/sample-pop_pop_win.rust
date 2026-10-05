@@ -2,6 +2,8 @@
 
 An implementation of Minesweeper in **Rust** using the **[Bevy Engine](https://bevyengine.org/)** (v0.15).
 
+**[Play in your browser](https://ykmnkmi.github.io/sample-pop_pop_win.rust/)**
+
 > **Origin & Attribution**: This project is a port of the classic **[Pop, Pop, Win!](https://github.com/dart-lang/sample-pop_pop_win)** game, originally created in [Dart](https://dart.dev/) by Google's Dart team and contributors as a 2D web showcase. The original carnival balloon-popping idea, gameplay mechanics, and retro aesthetic have been preserved and reimagined using Rust's Bevy ECS architecture.
 
 ## How to Play
@@ -41,19 +43,31 @@ An implementation of Minesweeper in **Rust** using the **[Bevy Engine](https://b
 * **Build & Run for Web (WebAssembly / WebGL2)**:
   ```powershell
   # 1. Install Trunk (first time only)
-  cargo install trunk
+  rustup target add wasm32-unknown-unknown
+  cargo install trunk --version 0.21.14 --locked
 
   # 2. Run local web server with hot-reload
   trunk serve
 
   # 3. Build optimized static bundle in dist/
-  trunk build --release
+  trunk build --release --locked
+
+  # 4. Build with the GitHub Pages deployment path
+  trunk build --release --locked --public-url "/sample-pop_pop_win.rust/"
   ```
 
 * **Run test suite**:
   ```powershell
   cargo test
   ```
+
+## CI and GitHub Pages
+
+GitHub Actions checks and tests the desktop game on Windows and Linux and builds the optimized WebAssembly bundle on every push or pull request to `master` or `main`.
+
+After all checks pass, pushes to `master` automatically publish `dist/` to [GitHub Pages](https://ykmnkmi.github.io/sample-pop_pop_win.rust/). Pull requests and pushes to `main` do not publish. You can also run **Rust CI & GitHub Pages** manually from the Actions tab, selecting `master` to publish.
+
+The repository's **Settings → Pages → Build and deployment → Source** must be set to **GitHub Actions**. Deployment uses the built-in `GITHUB_TOKEN`; no additional secrets are required.
 
 ## Original Project & Credits
 

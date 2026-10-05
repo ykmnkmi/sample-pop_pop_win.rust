@@ -1,10 +1,11 @@
-name: Rust CI
+name: Rust CI & GitHub Pages
 
 on:
   push:
     branches: [ master, main ]
   pull_request:
     branches: [ master, main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,14 +19,65 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev libudev-dev pkg-config libx11-dev
       - name: Cargo Check
-        run: cargo check --verbose
+        run: cargo check --locked --verbose
       - name: Cargo Test
-        run: cargo test --verbose
+        run: cargo test --locked --verbose
+
+  web-build:
+    name: Build Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: web
+      - name: Install Trunk
+        working-directory: ${{ runner.temp }}
+        run: |
+          release="https://github.com/trunk-rs/trunk/releases/download/v0.21.14"
+          archive="trunk-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --retry 3 --output "$archive" "$release/$archive"
+          curl --fail --location --retry 3 --output "$archive.sha256" "$release/$archive.sha256"
+          echo "$(cat "$archive.sha256")  $archive" | sha256sum --check
+          tar --extract --gzip --file "$archive" --directory "$HOME/.cargo/bin" trunk
+          trunk --version
+      - name: Build static web bundle
+        run: trunk build --release --locked --public-url "/sample-pop_pop_win.rust/"
+      - name: Upload GitHub Pages artifact
+        if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy GitHub Pages
+    needs: [check-and-test, web-build]
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy static web bundle
+        id: deployment
+        uses: actions/deploy-pages@v4
